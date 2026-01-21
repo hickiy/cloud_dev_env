@@ -1,0 +1,10 @@
+services:
+  cloud_dev_env:
+    build: .
+    image: cloud_dev_env:latest
+    container_name: cloud_dev_env
+    ports:
+      - "2224:22"
+    volumes:
+      - /home/yanyun:/home/yanyun
+    restart: unless-stopped

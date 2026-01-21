@@ -1,0 +1,29 @@
+
+# This is the ssh server system-wide configuration file.
+
+Port 22
+#AddressFamily any
+ListenAddress 0.0.0.0
+ListenAddress ::
+
+# HostKeys
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+# Logging
+SyslogFacility AUTH
+LogLevel INFO
+
+# Authentication
+PermitRootLogin yes
+PubkeyAuthentication yes
+PasswordAuthentication yes
+PermitEmptyPasswords no
+
+# Subsystem
+Subsystem sftp /usr/lib/openssh/sftp-server
+
+X11Forwarding yes
+PrintMotd no
+AcceptEnv LANG LC_*
