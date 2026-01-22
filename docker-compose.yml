@@ -6,5 +6,6 @@ services:
     ports:
       - "2224:22"
     volumes:
-      - /home/yanyun:/home/yanyun
+      - /root/yanyun:/root/yanyun
+      - /root/vscode-server:/root/vscode-server
     restart: unless-stopped

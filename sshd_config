@@ -27,3 +27,13 @@ Subsystem sftp /usr/lib/openssh/sftp-server
 X11Forwarding yes
 PrintMotd no
 AcceptEnv LANG LC_*
+
+# VS Code Remote SSH 优化设置
+ClientAliveInterval 60
+ClientAliveCountMax 3
+TCPKeepAlive yes
+
+# 允许端口转发（VS Code 需要）
+AllowTcpForwarding yes
+PermitTunnel yes
+GatewayPorts no
