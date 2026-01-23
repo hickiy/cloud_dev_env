@@ -1,11 +1,14 @@
 services:
-  cloud_dev_env:
+  vscode-dev:
     build: .
-    image: cloud_dev_env:latest
-    container_name: cloud_dev_env
-    ports:
-      - "2224:22"
+    image: vscode-dev:latest
+    container_name: vscode-dev
     volumes:
       - /root/yanyun:/root/yanyun
-      - /root/vscode-server:/root/vscode-server
+      - /root/vscode-server:/root/.vscode-server
     restart: unless-stopped
+    # 解除 seccomp 限制，允许 Node.js 创建线程
+    security_opt:
+      - seccomp:unconfined
+    # 使用 host 网络模式，避免端口转发问题
+    network_mode: host

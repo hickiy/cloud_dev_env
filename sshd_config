@@ -1,7 +1,7 @@
 
 # This is the ssh server system-wide configuration file.
 
-Port 22
+Port 2224
 #AddressFamily any
 ListenAddress 0.0.0.0
 ListenAddress ::
@@ -37,3 +37,5 @@ TCPKeepAlive yes
 AllowTcpForwarding yes
 PermitTunnel yes
 GatewayPorts no
+AllowStreamLocalForwarding yes
+PermitOpen any

@@ -11,34 +11,32 @@ ENV LANG=C.UTF-8 \
 RUN mkdir -p /run/sshd /var/cache/apt/archives/partial
 
 # 更新包列表并安装必要的软件
+# 仅包含 SSH 服务 + VS Code Server 运行时依赖
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
+        # SSH 服务
         openssh-server \
-        iputils-ping \
-        screen \
-        git \
-        curl \
-        wget \
+        # VS Code Server 下载和基础工具
         ca-certificates \
-        gnupg \
-        lsb-release \
-        sudo \
-        vim \
-        htop \
-        net-tools \
-        procps \
-        build-essential \
-        python3 \
-        python3-pip \
-        python3-venv \
-        locales \
+        curl \
+        git \
+        # 解压工具（Local Server Download 必需）
+        tar \
+        gzip \
+        # VS Code Server 启动脚本需要 bash
+        bash \
+        # VS Code Server 运行时依赖
         libatomic1 \
         libc6 \
-        libgcc1 \
+        libgcc-s1 \
         libgssapi-krb5-2 \
         libstdc++6 \
         zlib1g \
-        libicu72 && \
+        libicu76 \
+        # locale 支持
+        locales \
+        # 进程管理
+        procps && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -63,12 +61,11 @@ RUN chmod 600 /etc/ssh/sshd_config
 COPY ./authorized_keys /root/.ssh/authorized_keys
 RUN chmod 600 /root/.ssh/authorized_keys
 
-# 设置环境变量，优化 VS Code Server 性能
-ENV VSCODE_AGENT_FOLDER=/root/vscode-server \
-    SHELL=/bin/bash
+# 设置环境变量
+ENV SHELL=/bin/bash
 
-# 暴露 SSH 端口
-EXPOSE 22
+# 暴露 SSH 端口（host 模式下仅作文档说明）
+EXPOSE 2224
 
 # 设置工作目录
 WORKDIR /root
