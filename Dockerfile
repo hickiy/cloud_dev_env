@@ -25,20 +25,23 @@ RUN apt-get update && \
         gzip \
         # VS Code Server 启动脚本需要 bash
         bash \
-        # VS Code Server 运行时依赖
-        libatomic1 \
-        libc6 \
-        libgcc-s1 \
-        libgssapi-krb5-2 \
-        libstdc++6 \
-        zlib1g \
-        libicu76 \
         # locale 支持
         locales \
         # 进程管理
-        procps && \
+        procps \
+        # 终端复用
+        screen \
+        # Node.js 运行时与包管理器（供构建/脚本使用）
+        nodejs \
+        npm && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# 安装 VS Code CLI（轻量版，无 GUI 依赖）
+RUN curl -fsSL "https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64" -o /tmp/vscode-cli.tar.gz && \
+    tar -xzf /tmp/vscode-cli.tar.gz -C /usr/local/bin && \
+    rm -f /tmp/vscode-cli.tar.gz && \
+    chmod +x /usr/local/bin/code
 
 # 配置 locale
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
