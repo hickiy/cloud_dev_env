@@ -1,15 +1,62 @@
+version: '3.8'
+
 services:
-  vscode-dev:
+  cloud-dev-env:
     build: .
-    image: vscode-dev:latest
-    container_name: vscode-dev
+    image: cloud-dev-env:latest
+    container_name: cloud-dev-env
+    hostname: cloud-dev-env
+    
+    # 端口映射
     ports:
+      # SSH 端口
       - "2224:2224"
+      # VS Code Tunnel 端口范围
+      - "8000-8100:8000-8100"
+    
+    # 数据卷挂载
     volumes:
+      # 项目工作目录（主机: /root/yanyun）
       - /root/yanyun:/root/yanyun
-      - /root/vscode-server:/root/.vscode-server
+      # VS Code Server 配置持久化
+      - vscode-server:/root/.vscode-server
+      # 开发工具配置持久化
+      - dev-config:/root/.config
+    
+    # 重启策略
     restart: unless-stopped
-    # 解除 seccomp 限制，允许 Node.js 创建线程
+    
+    # 移除 seccomp 限制
     security_opt:
       - seccomp:unconfined
+    
+    # GPU 支持（如果主机有 NVIDIA GPU）
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - DEBIAN_FRONTEND=noninteractive
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+    
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "ssh", "-p", "2224", "localhost", "echo", "ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  vscode-server:
+    driver: local
+  dev-config:
+    driver: local
     
